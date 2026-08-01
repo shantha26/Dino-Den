@@ -1,0 +1,9 @@
+{
+  "appId": "com.kidsplayarea.app",
+  "appName": "Kids Play Area",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  }
+}
