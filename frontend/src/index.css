@@ -6,6 +6,12 @@ html, body {
   background-color: #FBF3DE;
   font-family: 'Times New Roman', Times, Georgia, serif;
   scroll-behavior: smooth;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html.dark body {
+  background-color: #081C15;
+  color: #FBF3DE;
 }
 
 h1, h2, h3, .font-display {
@@ -23,16 +29,28 @@ h1, h2, h3, .font-display {
   border: 2px solid #FBF3DE;
 }
 
+html.dark ::-webkit-scrollbar-thumb {
+  border-color: #081C15;
+}
+
 /* Rich layered jungle backdrop texture — warm sandstone base with soft
-   emerald and amber glows, plus a faint canopy-dapple pattern so every
-   screen feels like it's set inside the park, not just tinted. */
+   emerald and amber glows, plus a faint canopy-dapple pattern */
 .jungle-bg {
   background-color: #FBF3DE;
   background-image:
-    radial-gradient(circle at 8% 10%, rgba(21,153,87,0.10) 0, transparent 42%),
-    radial-gradient(circle at 92% 85%, rgba(224,166,58,0.12) 0, transparent 45%),
-    radial-gradient(circle at 50% 50%, rgba(84,214,156,0.05) 0, transparent 60%),
+    radial-gradient(circle at 8% 10%, rgba(21,153,87,0.12) 0, transparent 45%),
+    radial-gradient(circle at 92% 85%, rgba(224,166,58,0.14) 0, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(84,214,156,0.06) 0, transparent 60%),
     repeating-radial-gradient(circle at 20% 30%, rgba(14,59,38,0.025) 0, rgba(14,59,38,0.025) 2px, transparent 2px, transparent 46px);
+}
+
+html.dark .jungle-bg {
+  background-color: #081C15;
+  background-image:
+    radial-gradient(circle at 10% 15%, rgba(84,214,156,0.15) 0, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(224,166,58,0.12) 0, transparent 55%),
+    radial-gradient(circle at 50% 50%, rgba(21,153,87,0.1) 0, transparent 65%),
+    repeating-radial-gradient(circle at 20% 30%, rgba(84,214,156,0.02) 0, rgba(84,214,156,0.02) 2px, transparent 2px, transparent 46px);
 }
 
 /* Expedition-pass notches on the billing summary */
@@ -47,55 +65,78 @@ h1, h2, h3, .font-display {
   border-radius: 999px;
   left: -12px;
 }
+html.dark .ticket-notch::before,
+html.dark .ticket-notch::after {
+  background: #081C15;
+}
 .ticket-notch::before { top: -12px; }
 .ticket-notch::after { bottom: -12px; }
 
 .ticket-perforation { border-top: 2px dashed #E0A63A66; }
 
-/* Premium frosted-glass panel — layered blur + soft emerald edge glow so
-   cards feel like they're floating over the jungle backdrop. */
+/* 3D Glassmorphism panel — layered blur + soft emerald edge glow */
 .glass-card {
-  background: rgba(255, 251, 242, 0.78);
-  backdrop-filter: blur(20px) saturate(140%);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 8px 32px -12px rgba(14, 59, 38, 0.22), inset 0 1px 0 rgba(255,255,255,0.5);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-.glass-card:hover {
-  box-shadow: 0 18px 44px -14px rgba(14, 59, 38, 0.3), inset 0 1px 0 rgba(255,255,255,0.55);
+  background: rgba(255, 251, 242, 0.82);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 10px 36px -12px rgba(14, 59, 38, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
-.glass-input {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+html.dark .glass-card {
+  background: rgba(18, 48, 38, 0.75);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(84, 214, 156, 0.25);
+  box-shadow: 0 10px 36px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  color: #FBF3DE;
 }
+
+.glass-card:hover {
+  box-shadow: 0 20px 48px -14px rgba(14, 59, 38, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+html.dark .glass-card:hover {
+  box-shadow: 0 20px 48px -14px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* 3D Glass Inputs */
+.glass-input {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.15s ease, background-color 0.2s ease;
+}
+
+html.dark .glass-input {
+  background: rgba(10, 32, 24, 0.7);
+  color: #FBF3DE;
+  border-color: rgba(84, 214, 156, 0.25);
+}
+
 .glass-input:focus {
-  box-shadow: 0 0 0 4px rgba(84, 214, 156, 0.25);
+  box-shadow: 0 0 0 4px rgba(84, 214, 156, 0.3);
   transform: translateY(-1px);
 }
 
-/* Bouncy "stomp" press effect for touch-friendly buttons, now paired with a
-   subtle lift + glow on hover for a more premium SaaS feel. */
+/* Bouncy "stomp" press effect + 3D depth */
 .jelly-btn {
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+  transition: transform 0.15s cubic-bezier(.2,.8,.2,1), box-shadow 0.15s ease, filter 0.15s ease;
 }
 .jelly-btn:hover {
   transform: translateY(-2px);
-  filter: brightness(1.04);
+  filter: brightness(1.05);
 }
 .jelly-btn:active {
   transform: translateY(3px) scale(0.98);
   box-shadow: none !important;
 }
 
-/* Auto-ripple: a tiny script in main.jsx listens for pointerdown anywhere
-   inside a .jelly-btn and injects one of these spans at the press point. */
+/* Auto-ripple effect */
 .ripple-dot {
   position: absolute;
   border-radius: 999px;
@@ -113,13 +154,28 @@ h1, h2, h3, .font-display {
   animation: shimmer 2.2s linear infinite;
 }
 
-/* Card lift used on interactive dashboard tiles */
+html.dark .shimmer-bar {
+  background: linear-gradient(90deg, #0E3B26 0%, #159957 50%, #0E3B26 100%);
+}
+
+/* 3D Tile lift */
 .tile-lift {
   transition: transform 0.25s cubic-bezier(.2,.8,.2,1), box-shadow 0.25s ease;
 }
 .tile-lift:hover {
   transform: translateY(-4px);
-  box-shadow: 0 18px 40px -12px rgba(14,59,38,0.28);
+  box-shadow: 0 20px 44px -12px rgba(14,59,38,0.3);
+}
+
+/* Floating particles & leaves keyframes */
+@keyframes floatParticle {
+  0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.2; }
+  50% { transform: translateY(-30px) translateX(15px) rotate(180deg); opacity: 0.8; }
+  100% { transform: translateY(-60px) translateX(-10px) rotate(360deg); opacity: 0; }
+}
+
+.animate-particle {
+  animation: floatParticle 8s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -127,9 +183,8 @@ h1, h2, h3, .font-display {
   * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
 }
 
-/* Bump up base text size on larger (desktop/laptop) screens so the app reads
-   comfortably on a monitor, without affecting the compact mobile/tablet layout. */
 @media (min-width: 1024px) {
   html { font-size: 17.5px; }
   input, select, textarea, button { font-size: 1.05rem; }
 }
+

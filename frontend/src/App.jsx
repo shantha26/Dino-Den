@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LayoutDashboard, ClipboardList, Cake, Users, Ticket, Percent, Settings as SettingsIcon } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Cake, Users, Ticket, Percent, Settings as SettingsIcon, Sun, Moon } from "lucide-react";
 import CustomerForm from "./components/CustomerForm.jsx";
 import PlayPackages from "./components/PlayPackages.jsx";
 import Gaming from "./components/Gaming.jsx";
@@ -79,6 +79,7 @@ export default function App() {
   const { user, logout } = useAuth();
   const role = (user?.role || "admin").toLowerCase().trim();
   const [activeTab, setActiveTab] = useState(() => ROLE_HOME_TAB[role] || "booking");
+  const [isDark, setIsDark] = useState(() => localStorage.getItem("kpa-theme") === "dark");
   const [settingsUnlocked, setSettingsUnlocked] = useState(false);
   const [showPinModal, setShowPinModal] = useState(false);
   const [customer, setCustomer] = useState(emptyCustomer);
@@ -524,6 +525,15 @@ export default function App() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setIsDark((d) => !d)}
+              aria-label="Toggle Theme"
+              className="p-2 rounded-2xl bg-black/15 hover:bg-black/25 text-cream transition-all shadow-sm flex items-center justify-center"
+            >
+              {isDark ? <Sun size={18} className="text-amber" /> : <Moon size={18} className="text-sky" />}
+            </button>
+
             <NotificationBell
               dueCheckouts={dueCheckouts}
               onCheckout={handleCheckout}
