@@ -23,6 +23,8 @@ function storeToken(token, rememberMe) {
 export const ROLE_HOME_TAB = {
   admin: "dashboard",
   staff: "booking",
+  manager: "booking",
+  cashier: "booking",
 };
 
 const AuthContext = createContext(null);

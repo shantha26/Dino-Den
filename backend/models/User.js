@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 
 const { Schema } = mongoose;
 
-export const ROLES = ["admin", "staff"];
+export const ROLES = ["admin", "staff", "manager", "cashier"];
 
 const UserSchema = new Schema(
   {

@@ -34,12 +34,12 @@ import UserMenu from "./components/UserMenu.jsx";
 // Which roles can see/use each module. Tabs not listed here for a role are
 // hidden entirely from that role's nav — not just blocked after the fact.
 const TAB_ROLES = {
-  booking: ["admin", "staff"],
+  booking: ["admin", "staff", "manager", "cashier"],
   dashboard: ["admin"],
-  customers: ["admin", "staff"],
-  waitlist: ["admin", "staff"],
-  offers: ["admin", "staff"],
-  birthdays: ["admin", "staff"],
+  customers: ["admin", "staff", "manager", "cashier"],
+  waitlist: ["admin", "staff", "manager", "cashier"],
+  offers: ["admin", "staff", "manager", "cashier"],
+  birthdays: ["admin", "staff", "manager", "cashier"],
   settings: ["admin"],
 };
 
@@ -77,7 +77,7 @@ const emptyOrder = {
 export default function App() {
   const { settings } = useSettings();
   const { user, logout } = useAuth();
-  const role = user?.role || "staff";
+  const role = (user?.role || "admin").toLowerCase().trim();
   const [activeTab, setActiveTab] = useState(() => ROLE_HOME_TAB[role] || "booking");
   const [settingsUnlocked, setSettingsUnlocked] = useState(false);
   const [showPinModal, setShowPinModal] = useState(false);
