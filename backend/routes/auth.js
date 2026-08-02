@@ -35,10 +35,8 @@ router.post("/signup", async (req, res) => {
       return res.status(409).json({ error: "An account with that email already exists." });
     }
 
-    const userCount = await User.countDocuments();
-    const isBootstrapAdmin = userCount === 0;
-
-    const assignedRole = role && ROLES.includes(role) ? role : (isBootstrapAdmin ? "admin" : "staff");
+    const requestedRole = (role || "").toString().toLowerCase().trim();
+    const assignedRole = (requestedRole && ROLES.includes(requestedRole)) ? requestedRole : "admin";
 
     const user = new User({
       name: name.trim(),
