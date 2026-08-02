@@ -43,7 +43,6 @@ export default function BillingSummary({
   previouslyPaid = 0, newAdditions = null, amountDueNow = null, liveOffers = [],
 }) {
   const { settings } = useSettings();
-  const [discountInput, setDiscountInput] = useState("");
   const [showItems, setShowItems] = useState(true);
   const [promoInput, setPromoInput] = useState("");
   const [promoStatus, setPromoStatus] = useState("idle"); // idle | checking | error
@@ -82,7 +81,6 @@ export default function BillingSummary({
 
   useEffect(() => {
     if (saved) {
-      setDiscountInput("");
       setPromoInput("");
       setPromoStatus("idle");
       setPromoError("");
@@ -101,7 +99,6 @@ export default function BillingSummary({
         setPromoError(data.reason || "That promo code isn't valid.");
         return;
       }
-      setDiscountInput("");
       document.dispatchEvent(new CustomEvent("kpa:discount", { detail: 0 }));
       document.dispatchEvent(
         new CustomEvent("kpa:promo", { detail: { code: data.promo.code, discountAmount: data.discountAmount, promo: data.promo } })
@@ -200,51 +197,36 @@ export default function BillingSummary({
                   </button>
                 </div>
               ) : (
-                <div className="flex flex-col gap-2">
-                  {/* Dropdown for active offers if available */}
-                  {activeOffers.length > 0 && (
-                    <div className="flex items-center gap-1.5">
-                      <Ticket size={13} className="text-amber shrink-0" />
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <Ticket size={13} className="text-amber shrink-0" />
+                    {activeOffers.length > 0 ? (
                       <select
+                        value={promoInput}
                         onChange={(e) => {
                           const val = e.target.value;
+                          setPromoInput(val);
                           if (val) {
-                            setPromoInput(val);
                             handleApplyPromoCode(val);
                           }
                         }}
-                        defaultValue=""
-                        className="w-full rounded-lg border border-amber/40 bg-amber/5 px-2.5 py-1.5 text-xs font-bold text-ink focus:outline-none focus:border-fern cursor-pointer"
+                        className="w-full rounded-lg border border-amber/40 bg-white px-2.5 py-1.5 text-xs font-bold text-ink focus:outline-none focus:border-fern cursor-pointer"
                       >
-                        <option value="" disabled>🏷️ Select Promo Code</option>
+                        <option value="">Select Offer</option>
                         {activeOffers.map((offer) => (
                           <option key={offer.code} value={offer.code}>
-                            {offer.code} ({offer.type === "flat" ? `₹${offer.value} off` : `${offer.value}% off`}){offer.description ? ` — ${offer.description}` : ""}
+                            🏷️ {offer.code} ({offer.type === "flat" ? `₹${offer.value} off` : `${offer.value}% off`}){offer.description ? ` — ${offer.description}` : ""}
                           </option>
                         ))}
                       </select>
-                    </div>
-                  )}
-
-                  {/* Manual promo code input */}
-                  <div className="flex items-center gap-1.5">
-                    {activeOffers.length === 0 && <Ticket size={13} className="text-amber shrink-0" />}
-                    <input
-                      type="text"
-                      value={promoInput}
-                      onChange={(e) => { setPromoInput(e.target.value.toUpperCase()); setPromoStatus("idle"); }}
-                      onKeyDown={(e) => e.key === "Enter" && handleApplyPromoCode()}
-                      placeholder="Enter promo code"
-                      className="flex-1 min-w-0 rounded-lg border border-ink/15 px-2.5 py-1.5 text-sm font-bold text-ink uppercase tracking-wide focus:outline-none focus:border-fern bg-white placeholder:normal-case placeholder:font-semibold placeholder:text-ink/30"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleApplyPromoCode()}
-                      disabled={!promoInput.trim() || promoStatus === "checking"}
-                      className="jelly-btn shrink-0 bg-fern text-white text-xs font-extrabold uppercase tracking-wide px-3 py-1.5 rounded-lg shadow-popsm active:shadow-none disabled:opacity-40"
-                    >
-                      {promoStatus === "checking" ? <Loader2 className="animate-spin" size={13} /> : "Apply"}
-                    </button>
+                    ) : (
+                      <select
+                        disabled
+                        className="w-full rounded-lg border border-ink/15 bg-ink/5 px-2.5 py-1.5 text-xs font-bold text-ink/40 cursor-not-allowed"
+                      >
+                        <option value="">No offers available</option>
+                      </select>
+                    )}
                   </div>
                 </div>
               )}
