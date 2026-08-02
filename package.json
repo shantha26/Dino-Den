@@ -4,6 +4,6 @@
   "private": true,
   "scripts": {
     "start": "node backend/server.js",
-    "build": "npm --prefix frontend install && npm --prefix frontend run build"
+    "build": "npm --prefix frontend install && npm --prefix frontend run build && node -e \"require('fs').cpSync('frontend/dist', 'dist', {recursive: true})\""
   }
 }
