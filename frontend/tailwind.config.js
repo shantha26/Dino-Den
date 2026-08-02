@@ -23,8 +23,8 @@ export default {
         firefly: "#FFE28A",      // glow-dot color
       },
       fontFamily: {
-        display: ["'Times New Roman'", "Times", "Georgia", "serif"],
-        body: ["'Times New Roman'", "Times", "Georgia", "serif"],
+        display: ["'Outfit'", "'Plus Jakarta Sans'", "sans-serif"],
+        body: ["'Plus Jakarta Sans'", "system-ui", "sans-serif"],
       },
       borderRadius: {
         blob: "1.5rem",

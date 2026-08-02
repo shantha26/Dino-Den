@@ -71,7 +71,7 @@ export default function MobileSearch({ onFill }) {
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="bg-bone rounded-blob shadow-pop border-2 border-fern/20 p-5 md:p-6 overflow-hidden"
+      className="glass-card rounded-3xl shadow-pop border-2 border-fern/20 p-5 md:p-6 overflow-hidden"
     >
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">

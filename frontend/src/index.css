@@ -3,21 +3,21 @@
 @tailwind utilities;
 
 html, body {
-  background-color: #FBF3DE;
-  font-family: 'Times New Roman', Times, Georgia, serif;
+  background-color: #F8FAF7;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   scroll-behavior: smooth;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 html.dark body {
-  background-color: #081C15;
-  color: #FBF3DE;
+  background-color: #0B1912;
+  color: #F8FAF7;
 }
 
 h1, h2, h3, .font-display {
-  font-family: 'Times New Roman', Times, Georgia, serif;
+  font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
   font-weight: 700;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.01em;
 }
 
 /* Custom scrollbar dressed in jungle tones */
@@ -26,17 +26,17 @@ h1, h2, h3, .font-display {
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #54D69C, #159957);
   border-radius: 999px;
-  border: 2px solid #FBF3DE;
+  border: 2px solid #F8FAF7;
 }
 
 html.dark ::-webkit-scrollbar-thumb {
-  border-color: #081C15;
+  border-color: #0B1912;
 }
 
 /* Rich layered jungle backdrop texture — warm sandstone base with soft
    emerald and amber glows, plus a faint canopy-dapple pattern */
 .jungle-bg {
-  background-color: #FBF3DE;
+  background-color: #F8FAF7;
   background-image:
     radial-gradient(circle at 8% 10%, rgba(21,153,87,0.12) 0, transparent 45%),
     radial-gradient(circle at 92% 85%, rgba(224,166,58,0.14) 0, transparent 50%),
@@ -45,7 +45,7 @@ html.dark ::-webkit-scrollbar-thumb {
 }
 
 html.dark .jungle-bg {
-  background-color: #081C15;
+  background-color: #0B1912;
   background-image:
     radial-gradient(circle at 10% 15%, rgba(84,214,156,0.15) 0, transparent 50%),
     radial-gradient(circle at 90% 80%, rgba(224,166,58,0.12) 0, transparent 55%),
@@ -61,63 +61,74 @@ html.dark .jungle-bg {
   position: absolute;
   width: 24px;
   height: 24px;
-  background: #FBF3DE;
+  background: #F8FAF7;
   border-radius: 999px;
   left: -12px;
 }
 html.dark .ticket-notch::before,
 html.dark .ticket-notch::after {
-  background: #081C15;
+  background: #0B1912;
 }
 .ticket-notch::before { top: -12px; }
 .ticket-notch::after { bottom: -12px; }
 
 .ticket-perforation { border-top: 2px dashed #E0A63A66; }
 
-/* 3D Glassmorphism panel — layered blur + soft emerald edge glow */
+/* Futuristic 3D Glass Panel */
 .glass-card {
-  background: rgba(255, 251, 242, 0.82);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow: 0 10px 36px -12px rgba(14, 59, 38, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.7);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 16px 40px -12px rgba(21, 153, 87, 0.12), 0 4px 16px -4px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html.dark .glass-card {
-  background: rgba(18, 48, 38, 0.75);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid rgba(84, 214, 156, 0.25);
-  box-shadow: 0 10px 36px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  color: #FBF3DE;
+  background: rgba(15, 38, 28, 0.82);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(84, 214, 156, 0.2);
+  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  color: #F8FAF7;
 }
 
 .glass-card:hover {
-  box-shadow: 0 20px 48px -14px rgba(14, 59, 38, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 24px 50px -14px rgba(21, 153, 87, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
 html.dark .glass-card:hover {
-  box-shadow: 0 20px 48px -14px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 24px 50px -14px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 /* 3D Glass Inputs */
 .glass-input {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.15s ease, background-color 0.2s ease;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(21, 153, 87, 0.15);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html.dark .glass-input {
-  background: rgba(10, 32, 24, 0.7);
-  color: #FBF3DE;
+  background: rgba(10, 28, 20, 0.85);
+  color: #F8FAF7;
   border-color: rgba(84, 214, 156, 0.25);
 }
 
 .glass-input:focus {
-  box-shadow: 0 0 0 4px rgba(84, 214, 156, 0.3);
+  background: #FFFFFF;
+  border-color: #159957;
+  box-shadow: 0 0 0 4px rgba(84, 214, 156, 0.3), 0 8px 20px -6px rgba(21, 153, 87, 0.15);
   transform: translateY(-1px);
+}
+
+html.dark .glass-input:focus {
+  background: rgba(12, 32, 23, 0.95);
+  border-color: #54D69C;
+  box-shadow: 0 0 0 4px rgba(84, 214, 156, 0.25), 0 8px 20px -6px rgba(0, 0, 0, 0.5);
 }
 
 /* Bouncy "stomp" press effect + 3D depth */

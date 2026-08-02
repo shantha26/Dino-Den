@@ -15,7 +15,7 @@ function Field({ label, icon: Icon, children, className = "" }) {
 }
 
 const inputBase =
-  "rounded-2xl border-2 bg-white px-4 py-2.5 font-body font-semibold text-ink placeholder:text-ink/30 focus:outline-none transition-colors text-base lg:text-lg";
+  "rounded-2xl border-2 glass-input px-4 py-2.5 font-body font-semibold text-ink placeholder:text-ink/30 focus:outline-none transition-all text-base lg:text-lg shadow-sm";
 
 export default function CustomerForm({
   customer,
@@ -61,7 +61,7 @@ export default function CustomerForm({
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="bg-bone rounded-blob shadow-pop border-2 border-ink/10 p-6 md:p-8 relative overflow-hidden"
+      className="glass-card rounded-3xl shadow-pop border-2 border-fern/20 p-6 md:p-8 relative overflow-hidden"
     >
       <div className="flex items-center justify-between gap-3 mb-1 flex-wrap">
         <div className="flex items-center gap-3">

@@ -480,33 +480,22 @@ export default function App() {
   return (
     <div className="min-h-screen bg-cream jungle-bg relative">
       <DinoBackground variant="app" />
-      <header className="relative z-10 bg-jungle-gradient py-3 px-6 shadow-pop">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div
-            className="hidden md:block absolute z-0 pointer-events-none opacity-70"
-            style={{ top: "8%" }}
-            initial={{ x: "-10%" }}
-            animate={{ x: "110vw", y: [0, 8, 0] }}
-            transition={{ x: { duration: 26, repeat: Infinity, ease: "linear" }, y: { duration: 3, repeat: Infinity, ease: "easeInOut" } }}
-          >
-            <Pterodactyl className="w-14 h-10" />
-          </motion.div>
-        </div>
-        <div className="max-w-screen-2xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-cream">
-          <div className="flex items-center gap-2">
+      <header className="sticky top-0 z-30 px-4 md:px-8 pt-4 pb-2">
+        <div className="max-w-screen-2xl mx-auto rounded-3xl bg-gradient-to-r from-ferndeep/95 via-fern/90 to-swamp/95 backdrop-blur-xl border border-white/30 shadow-pop p-3.5 px-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-cream">
+          <div className="flex items-center gap-3">
             <motion.img
               src={settings.logo || "/dino-den-logo.png"}
               alt=""
-              className="w-9 h-9 rounded-full object-cover shadow-popsm border-2 border-cream/30"
-              animate={{ y: [0, -2, 0] }}
+              className="w-10 h-10 rounded-full object-cover shadow-glow border-2 border-white/40"
+              animate={{ y: [0, -3, 0] }}
               transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
             />
-            <span className="font-display text-xl md:text-2xl tracking-wide drop-shadow">
+            <span className="font-display font-extrabold text-xl md:text-2xl tracking-tight drop-shadow-md text-white">
               {settings.businessName}
             </span>
           </div>
 
-          <nav className="flex items-center gap-2 bg-black/15 rounded-2xl p-1.5 w-fit">
+          <nav className="flex items-center gap-1.5 bg-black/25 backdrop-blur-md rounded-2xl p-1.5 overflow-x-auto max-w-full">
             {tabs.map(({ key, label, icon: Icon }) => {
               const active = activeTab === key;
               return (
@@ -514,10 +503,13 @@ export default function App() {
                   key={key}
                   type="button"
                   onClick={() => handleTabSelect(key)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl font-display text-base md:text-lg tracking-wide transition-colors ${active ? "bg-cream text-fern shadow-pop" : "text-cream/80 hover:text-cream"
-                    }`}
+                  className={`relative flex items-center gap-2 px-3.5 py-2 rounded-xl font-display text-sm md:text-base font-bold tracking-wide transition-all ${
+                    active
+                      ? "bg-white text-fern shadow-popsm font-extrabold scale-[1.02]"
+                      : "text-cream/80 hover:text-white hover:bg-white/10"
+                  }`}
                 >
-                  <Icon size={18} />
+                  <Icon size={17} className={active ? "text-fern" : "text-cream/70"} />
                   {label}
                 </button>
               );
