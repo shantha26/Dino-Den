@@ -7,7 +7,7 @@ const { Schema } = mongoose;
 // leaves room for a separate "memberships" collection later.
 const CustomerSchema = new Schema(
   {
-    parentName: { type: String, required: true, trim: true },
+    parentName: { type: String, required: false, default: "", trim: true },
     kidName: { type: String, required: true, trim: true },
     mobileNumber: {
       type: String,

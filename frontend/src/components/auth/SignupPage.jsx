@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Loader2, UserPlus, Mail, Lock, User } from "lucide-react";
+import { Loader2, UserPlus, Mail, Lock, User, ShieldCheck } from "lucide-react";
 import AuthLayout from "./AuthLayout.jsx";
 import PasswordStrengthMeter, { scorePassword } from "./PasswordStrengthMeter.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
@@ -11,6 +11,7 @@ export default function SignupPage({ onNavigate }) {
   const { signup } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [role, setRole] = useState("staff");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -34,17 +35,18 @@ export default function SignupPage({ onNavigate }) {
     try {
       // On success this logs the person in and AuthGate swaps to <App/>
       // automatically — no further navigation needed here.
-      await signup(name.trim(), email.trim(), password);
+      await signup(name.trim(), email.trim(), password, role);
     } catch (err) {
-      setError(err?.response?.data?.error || "Could not create the account. Please try again.");
+      const serverError = err?.response?.data?.error || err?.response?.data?.message;
+      setError(serverError || err?.message || "Could not create the account. Please try again.");
       setSubmitting(false);
     }
   };
 
   return (
     <AuthLayout
-      title="Staff Sign Up"
-      subtitle="First account created on this system becomes the admin automatically."
+      title="Create Account"
+      subtitle="Select Admin or Staff role to set up your account."
       footer={
         <span className="text-ink/60 font-bold">
           Already have an account?{" "}
@@ -55,6 +57,21 @@ export default function SignupPage({ onNavigate }) {
       }
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <label className="flex flex-col gap-1.5">
+          <span className="text-[11px] font-extrabold text-ink/50 uppercase tracking-widest">Account Role</span>
+          <div className="relative">
+            <ShieldCheck size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40 pointer-events-none" />
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className={`${inputClass} bg-white`}
+            >
+              <option value="admin">Admin</option>
+              <option value="staff">Staff</option>
+            </select>
+          </div>
+        </label>
+
         <label className="flex flex-col gap-1.5">
           <span className="text-[11px] font-extrabold text-ink/50 uppercase tracking-widest">Full Name</span>
           <div className="relative">

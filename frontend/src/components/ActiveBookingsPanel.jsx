@@ -30,7 +30,6 @@ function BookingCard({ booking, now, editingId, checkingOutId, onEdit, onCheckou
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="font-display text-base text-ink leading-tight truncate">{booking.kidName}</p>
-          <p className="text-xs font-bold text-ink/45 truncate">{booking.parentName}</p>
         </div>
         <motion.span
           key={due ? "due" : "active"}

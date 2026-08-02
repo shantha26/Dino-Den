@@ -25,7 +25,7 @@ function isStrongEnough(password) {
 // round-trip required.
 router.post("/signup", async (req, res) => {
   try {
-    const { name, email, password } = req.body || {};
+    const { name, email, password, role } = req.body || {};
     if (!name?.trim() || !email?.trim() || !password) {
       return res.status(400).json({ error: "Name, email, and password are required." });
     }
@@ -41,15 +41,17 @@ router.post("/signup", async (req, res) => {
     const userCount = await User.countDocuments();
     const isBootstrapAdmin = userCount === 0;
 
+    const assignedRole = role && ROLES.includes(role) ? role : (isBootstrapAdmin ? "admin" : "staff");
+
     const user = new User({
       name: name.trim(),
       email: email.toLowerCase().trim(),
-      role: "admin",
+      role: assignedRole,
       isVerified: true,
     });
     await user.setPassword(password);
 
-    if (isBootstrapAdmin) {
+    if (assignedRole === "admin") {
       await user.setAdminSecurityPassword(DEFAULT_ADMIN_SECURITY_PASSWORD);
     }
 

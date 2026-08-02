@@ -12,7 +12,7 @@ import { useAuth } from "../../context/AuthContext.jsx";
 const inputClass =
   "rounded-xl border-2 border-ink/10 px-3 py-2 text-sm font-bold text-ink focus:outline-none focus:border-fern bg-white w-full";
 
-const ROLE_LABEL = { admin: "Admin", manager: "Manager", cashier: "Cashier" };
+const ROLE_LABEL = { admin: "Admin", staff: "Staff" };
 
 function Section({ icon: Icon, title, subtitle, children }) {
   return (
@@ -121,7 +121,7 @@ function StaffManagement() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", password: "", role: "admin" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", role: "staff" });
   const [creating, setCreating] = useState(false);
   const [formError, setFormError] = useState("");
 
@@ -147,7 +147,7 @@ function StaffManagement() {
     setCreating(true);
     try {
       await createStaffUser(form);
-      setForm({ name: "", email: "", password: "", role: "admin" });
+      setForm({ name: "", email: "", password: "", role: "staff" });
       setShowForm(false);
       await load();
     } catch (err) {
@@ -180,7 +180,7 @@ function StaffManagement() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <p className="text-xs font-bold text-ink/40">
-          Admin/manager-created accounts are verified instantly — no email required.
+          Admin-created accounts are verified instantly — no email required.
         </p>
         <button
           type="button"
@@ -197,6 +197,7 @@ function StaffManagement() {
           <input required type="email" placeholder="Email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} className={inputClass} />
           <input required type="password" placeholder="Temporary password" value={form.password} onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))} className={inputClass} />
           <select value={form.role} onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))} className={inputClass}>
+            <option value="staff">Staff</option>
             <option value="admin">Admin</option>
           </select>
           {formError && <p className="sm:col-span-2 text-lava font-bold text-xs">{formError}</p>}
@@ -234,6 +235,7 @@ function StaffManagement() {
                       onChange={(e) => handleRoleChange(u.id, e.target.value)}
                       className="rounded-lg border-2 border-ink/10 px-2 py-1 text-xs font-bold bg-white"
                     >
+                      <option value="staff">Staff</option>
                       <option value="admin">Admin</option>
                     </select>
                   </td>

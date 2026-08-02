@@ -21,7 +21,7 @@ export async function requireAuth(req, res, next) {
   }
 }
 
-// requireRole("admin", "manager") — call after requireAuth.
+// requireRole("admin", "staff") — call after requireAuth.
 export function requireRole(...roles) {
   return (req, res, next) => {
     if (!req.user) return res.status(401).json({ error: "Not authenticated" });

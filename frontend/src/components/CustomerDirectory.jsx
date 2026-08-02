@@ -43,10 +43,8 @@ function CustomerCard({ c, expanded, onToggle, visits, visitsLoading }) {
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-display text-lg text-ink">{c.parentName}</span>
-              <span className="text-ink/30">·</span>
-              <span className="font-display text-lg text-fern">
-                {c.kidNames.length > 1 ? c.kidNames.join(", ") : c.kidName}
+              <span className="font-display text-lg text-ink">
+                {c.kidNames?.length > 1 ? c.kidNames.join(", ") : c.kidName}
               </span>
             </div>
             <p className="text-sm font-bold text-ink/40 mt-0.5 flex items-center gap-1.5">
@@ -200,7 +198,7 @@ export default function CustomerDirectory() {
           <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink/30 pointer-events-none" />
           <input
             className="w-full rounded-2xl border-2 border-ink/10 focus:border-fern bg-white pl-10 pr-10 py-3 font-body font-semibold text-ink placeholder:text-ink/30 focus:outline-none transition-colors text-base"
-            placeholder="Search by parent name, kid name, or mobile number"
+            placeholder="Search by kid name or mobile number"
             value={query}
             onChange={handleQueryChange}
           />

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Tag, ChevronDown, ChevronUp, Ticket, X, CheckCircle2 } from "lucide-react";
+import { Loader2, ChevronDown, ChevronUp, Ticket, X, CheckCircle2 } from "lucide-react";
 import { useSettings } from "../context/SettingsContext.jsx";
-import { validatePromoCode } from "../api.js";
+import { validatePromoCode, fetchLiveOffers } from "../api.js";
+import { formatLocalDate } from "../utils.js";
 import { Stegosaurus } from "./shared/AnimatedDinosaurs.jsx";
 
 function SectionDivider() {
@@ -39,7 +40,7 @@ function SummaryRow({ label, value, muted = false, accent = false, strikethrough
 
 export default function BillingSummary({
   totals, paymentMethod, splitPayment, onSave, saving, saved, disabled, appliedPromo, editing, onCancelEdit,
-  previouslyPaid = 0, newAdditions = null, amountDueNow = null,
+  previouslyPaid = 0, newAdditions = null, amountDueNow = null, liveOffers = [],
 }) {
   const { settings } = useSettings();
   const [discountInput, setDiscountInput] = useState("");
@@ -47,6 +48,17 @@ export default function BillingSummary({
   const [promoInput, setPromoInput] = useState("");
   const [promoStatus, setPromoStatus] = useState("idle"); // idle | checking | error
   const [promoError, setPromoError] = useState("");
+  const [fetchedOffers, setFetchedOffers] = useState([]);
+
+  useEffect(() => {
+    if (!liveOffers || liveOffers.length === 0) {
+      fetchLiveOffers(formatLocalDate())
+        .then(({ data }) => setFetchedOffers(data || []))
+        .catch(() => setFetchedOffers([]));
+    }
+  }, [liveOffers]);
+
+  const activeOffers = (liveOffers && liveOffers.length > 0) ? liveOffers : fetchedOffers;
 
   const hasItems = totals.allLineItems?.length > 0;
   const discount = totals.discountAmount || 0;
@@ -77,27 +89,18 @@ export default function BillingSummary({
     }
   }, [saved]);
 
-  const applyManualDiscount = (raw) => {
-    setDiscountInput(raw);
-    document.dispatchEvent(new CustomEvent("kpa:discount", { detail: Number(raw) || 0 }));
-    // Typing a manual discount overrides any applied promo code.
-    if (appliedPromo) {
-      document.dispatchEvent(new CustomEvent("kpa:promo", { detail: null }));
-    }
-  };
-
-  const handleApplyPromo = async () => {
-    if (!promoInput.trim()) return;
+  const handleApplyPromoCode = async (codeToUse) => {
+    const code = (codeToUse !== undefined ? codeToUse : promoInput).trim();
+    if (!code) return;
     setPromoStatus("checking");
     setPromoError("");
     try {
-      const { data } = await validatePromoCode(promoInput.trim(), totals.subtotal);
+      const { data } = await validatePromoCode(code, totals.subtotal);
       if (!data.valid) {
         setPromoStatus("error");
         setPromoError(data.reason || "That promo code isn't valid.");
         return;
       }
-      // A successful promo code replaces any manual discount.
       setDiscountInput("");
       document.dispatchEvent(new CustomEvent("kpa:discount", { detail: 0 }));
       document.dispatchEvent(
@@ -197,48 +200,58 @@ export default function BillingSummary({
                   </button>
                 </div>
               ) : (
-                <div className="flex items-center gap-1.5">
-                  <Ticket size={13} className="text-amber shrink-0" />
-                  <input
-                    type="text"
-                    value={promoInput}
-                    onChange={(e) => { setPromoInput(e.target.value.toUpperCase()); setPromoStatus("idle"); }}
-                    onKeyDown={(e) => e.key === "Enter" && handleApplyPromo()}
-                    placeholder="Promo code"
-                    className="flex-1 min-w-0 rounded-lg border border-ink/15 px-2.5 py-1.5 text-sm font-bold text-ink uppercase tracking-wide focus:outline-none focus:border-fern bg-white placeholder:normal-case placeholder:font-semibold placeholder:text-ink/30"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleApplyPromo}
-                    disabled={!promoInput.trim() || promoStatus === "checking"}
-                    className="jelly-btn shrink-0 bg-fern text-white text-xs font-extrabold uppercase tracking-wide px-3 py-1.5 rounded-lg shadow-popsm active:shadow-none disabled:opacity-40"
-                  >
-                    {promoStatus === "checking" ? <Loader2 className="animate-spin" size={13} /> : "Apply"}
-                  </button>
+                <div className="flex flex-col gap-2">
+                  {/* Dropdown for active offers if available */}
+                  {activeOffers.length > 0 && (
+                    <div className="flex items-center gap-1.5">
+                      <Ticket size={13} className="text-amber shrink-0" />
+                      <select
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val) {
+                            setPromoInput(val);
+                            handleApplyPromoCode(val);
+                          }
+                        }}
+                        defaultValue=""
+                        className="w-full rounded-lg border border-amber/40 bg-amber/5 px-2.5 py-1.5 text-xs font-bold text-ink focus:outline-none focus:border-fern cursor-pointer"
+                      >
+                        <option value="" disabled>🏷️ Select Promo Code</option>
+                        {activeOffers.map((offer) => (
+                          <option key={offer.code} value={offer.code}>
+                            {offer.code} ({offer.type === "flat" ? `₹${offer.value} off` : `${offer.value}% off`}){offer.description ? ` — ${offer.description}` : ""}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {/* Manual promo code input */}
+                  <div className="flex items-center gap-1.5">
+                    {activeOffers.length === 0 && <Ticket size={13} className="text-amber shrink-0" />}
+                    <input
+                      type="text"
+                      value={promoInput}
+                      onChange={(e) => { setPromoInput(e.target.value.toUpperCase()); setPromoStatus("idle"); }}
+                      onKeyDown={(e) => e.key === "Enter" && handleApplyPromoCode()}
+                      placeholder="Enter promo code"
+                      className="flex-1 min-w-0 rounded-lg border border-ink/15 px-2.5 py-1.5 text-sm font-bold text-ink uppercase tracking-wide focus:outline-none focus:border-fern bg-white placeholder:normal-case placeholder:font-semibold placeholder:text-ink/30"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleApplyPromoCode()}
+                      disabled={!promoInput.trim() || promoStatus === "checking"}
+                      className="jelly-btn shrink-0 bg-fern text-white text-xs font-extrabold uppercase tracking-wide px-3 py-1.5 rounded-lg shadow-popsm active:shadow-none disabled:opacity-40"
+                    >
+                      {promoStatus === "checking" ? <Loader2 className="animate-spin" size={13} /> : "Apply"}
+                    </button>
+                  </div>
                 </div>
               )}
               {promoStatus === "error" && (
                 <p className="text-xs font-bold text-lava -mt-1">{promoError}</p>
               )}
 
-              {/* Manual discount input */}
-              <div className="flex items-center gap-2">
-                <Tag size={13} className="text-amber shrink-0" />
-                <span className="text-xs font-extrabold text-ink/50 uppercase tracking-wide shrink-0">Manual discount</span>
-                <div className="flex items-center gap-1 ml-auto">
-                  <span className="text-xs font-bold text-ink/40">₹</span>
-                  <input
-                    type="number"
-                    min={0}
-                    max={totals.subtotal}
-                    value={discountInput}
-                    disabled={!!appliedPromo}
-                    onChange={(e) => applyManualDiscount(e.target.value.replace(/[^0-9]/g, ""))}
-                    placeholder="0"
-                    className="w-20 text-right rounded-lg border border-ink/15 px-2 py-1 text-sm font-bold text-amber focus:outline-none focus:border-amber bg-white disabled:opacity-40 disabled:bg-ink/5"
-                  />
-                </div>
-              </div>
               {discount > 0 && (
                 <SummaryRow label="Discount applied" value={`−₹${discount.toFixed(0)}`} muted />
               )}

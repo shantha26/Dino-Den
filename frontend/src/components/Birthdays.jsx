@@ -200,7 +200,6 @@ function BirthdayCard({ kid, highlight = false, today }) {
         </span>
       </div>
       <p className="font-display text-lg text-ink">{kid.kidName}</p>
-      <p className="text-sm font-bold text-ink/50">Parent: {kid.parentName}</p>
       <p className="text-sm font-bold text-ink/50 flex items-center gap-1.5">
         <Phone size={13} /> {kid.mobileNumber}
       </p>

@@ -58,7 +58,7 @@ router.post("/validate", async (req, res) => {
 });
 
 // POST /api/promo-codes — create a new promo/festival code
-router.post("/", requireRole("admin", "manager"), async (req, res) => {
+router.post("/", requireRole("admin", "staff"), async (req, res) => {
   try {
     const body = { ...req.body };
     if (body.code) body.code = body.code.trim().toUpperCase();
@@ -74,7 +74,7 @@ router.post("/", requireRole("admin", "manager"), async (req, res) => {
 });
 
 // PUT /api/promo-codes/:id
-router.put("/:id", requireRole("admin", "manager"), async (req, res) => {
+router.put("/:id", requireRole("admin", "staff"), async (req, res) => {
   try {
     const body = { ...req.body };
     if (body.code) body.code = body.code.trim().toUpperCase();
@@ -90,7 +90,7 @@ router.put("/:id", requireRole("admin", "manager"), async (req, res) => {
 });
 
 // DELETE /api/promo-codes/:id
-router.delete("/:id", requireRole("admin", "manager"), async (req, res) => {
+router.delete("/:id", requireRole("admin", "staff"), async (req, res) => {
   try {
     const promo = await PromoCode.findByIdAndDelete(req.params.id);
     if (!promo) return res.status(404).json({ error: "Promo code not found" });

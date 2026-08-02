@@ -539,9 +539,8 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// DELETE /api/customers/:id — admin/manager only; cashiers can create and
-// check out bookings but shouldn't be able to erase records.
-router.delete("/:id", requireRole("admin", "manager"), async (req, res) => {
+// DELETE /api/customers/:id — admin and staff only
+router.delete("/:id", requireRole("admin", "staff"), async (req, res) => {
   try {
     const customer = await Customer.findByIdAndDelete(req.params.id);
     if (!customer) return res.status(404).json({ error: "Customer not found" });

@@ -22,8 +22,7 @@ function storeToken(token, rememberMe) {
 // "redirect users to their respective dashboards" requirement.
 export const ROLE_HOME_TAB = {
   admin: "dashboard",
-  manager: "dashboard",
-  cashier: "booking",
+  staff: "booking",
 };
 
 const AuthContext = createContext(null);
@@ -81,8 +80,8 @@ export function AuthProvider({ children }) {
     return data.user;
   }, []);
 
-  const signup = useCallback(async (name, email, password) => {
-    const { data } = await apiSignup({ name, email, password });
+  const signup = useCallback(async (name, email, password, role) => {
+    const { data } = await apiSignup({ name, email, password, role });
     // Backend now auto-verifies and returns a token/user just like login,
     // so a fresh signup drops the person straight into the app.
     storeToken(data.token, false);

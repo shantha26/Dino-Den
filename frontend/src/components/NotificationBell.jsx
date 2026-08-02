@@ -105,7 +105,7 @@ export default function NotificationBell({
                       className="bg-lava/10 border border-lava/25 rounded-xl px-3 py-2"
                     >
                       <p className="font-display text-sm text-ink">🎉 {kid.kidName}</p>
-                      <p className="text-[11px] font-bold text-ink/50">Turning {kid.turningAge} · {kid.parentName}</p>
+                      <p className="text-[11px] font-bold text-ink/50">Turning {kid.turningAge} · {kid.mobileNumber}</p>
                     </div>
                   ))}
                 </div>

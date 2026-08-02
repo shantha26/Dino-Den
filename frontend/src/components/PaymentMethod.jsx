@@ -24,7 +24,7 @@ export default function PaymentMethod({ value, onChange, splitAmounts, onSplitCh
   const selectMethod = (key) => {
     if (key === "split") {
       // Default the full total to Cash so the two amounts always sum to the
-      // total the moment Split is selected — the cashier can then move
+      // total the moment Split is selected — staff can then move
       // however much of it over to GPay.
       onSplitChange({ cashAmount: total, gpayAmount: 0 });
     } else {

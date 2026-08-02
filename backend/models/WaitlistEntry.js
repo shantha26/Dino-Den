@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const WaitlistEntrySchema = new Schema(
   {
-    parentName: { type: String, required: true, trim: true },
+    parentName: { type: String, required: false, default: "", trim: true },
     kidName: { type: String, required: true, trim: true },
     mobileNumber: {
       type: String,

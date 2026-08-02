@@ -57,7 +57,7 @@ export default function BirthdayPopup({ kids, onClose }) {
                       <p className="font-display text-base text-ink">
                         {kid.kidName} <span className="text-lava">— turning {kid.turningAge}</span>
                       </p>
-                      <p className="text-xs font-bold text-ink/50">Parent: {kid.parentName}</p>
+                      <p className="text-xs font-bold text-ink/50">Mobile: {kid.mobileNumber}</p>
                     </div>
                   </div>
                 ))}

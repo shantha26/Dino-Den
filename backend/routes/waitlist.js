@@ -86,8 +86,8 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const { parentName, kidName, mobileNumber } = req.body;
-    if (!parentName || !kidName || !mobileNumber) {
-      return res.status(400).json({ error: "Parent name, kid name, and mobile number are required" });
+    if (!kidName || !mobileNumber) {
+      return res.status(400).json({ error: "Kid name and mobile number are required" });
     }
     if (!/^\d{10}$/.test(mobileNumber)) {
       return res.status(400).json({ error: "Provide a valid 10-digit mobile number" });
@@ -98,7 +98,7 @@ router.post("/", async (req, res) => {
     const tokenNumber = (last?.tokenNumber || 0) + 1;
 
     const entry = await WaitlistEntry.create({
-      parentName,
+      parentName: parentName || kidName,
       kidName,
       mobileNumber,
       date,

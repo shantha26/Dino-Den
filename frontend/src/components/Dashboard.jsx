@@ -651,21 +651,20 @@ export default function Dashboard() {
                   <table className="w-full text-sm border-collapse min-w-[720px]">
                     <thead>
                       <tr style={{ background: FERN + "18" }}>
-                        {["Date","Time In","Parent","Kid","Mobile","Packages","Total","Payment"].map((c, i) => (
-                          <th key={c} className={`px-3 py-2.5 font-extrabold text-ink/60 uppercase tracking-widest text-[11px] ${i === 0 ? "text-left" : i < 5 ? "text-left" : "text-right"}`}>{c}</th>
+                        {["Date","Time In","Kid","Mobile","Packages","Total","Payment"].map((c, i) => (
+                          <th key={c} className={`px-3 py-2.5 font-extrabold text-ink/60 uppercase tracking-widest text-[11px] ${i === 0 ? "text-left" : i < 4 ? "text-left" : "text-right"}`}>{c}</th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
                       {allCustomers.length === 0 ? (
-                        <tr><td colSpan={8} className="text-center py-10 font-bold text-ink/30 italic">No bookings recorded yet</td></tr>
+                        <tr><td colSpan={7} className="text-center py-10 font-bold text-ink/30 italic">No bookings recorded yet</td></tr>
                       ) : allCustomers.slice(0, 50).map((c, i) => {
                         const breakdown = getKidPackageBreakdown(c);
                         return (
                           <tr key={c._id || i} className={i % 2 === 1 ? "bg-ink/[0.025]" : ""}>
                             <td className="px-3 py-2 font-display border-t border-ink/5 text-sm whitespace-nowrap">{c.date}</td>
                             <td className="px-3 py-2 border-t border-ink/5 text-sm whitespace-nowrap text-ink/60 font-bold">{c.timeIn}</td>
-                            <td className="px-3 py-2 border-t border-ink/5 font-bold">{c.parentName}</td>
                             <td className="px-3 py-2 border-t border-ink/5 font-bold text-fern">
                               {breakdown.map((k, ix) => (
                                 <div key={ix} className="whitespace-nowrap">{k.name}</div>

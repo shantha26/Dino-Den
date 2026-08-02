@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { PawPrint, Phone, Cake, Clock, LogOut, Plus, X, Package } from "lucide-react";
+import { PawPrint, Phone, Cake, Clock, LogOut, Plus, X } from "lucide-react";
 import { calculateAge, formatDMY } from "../utils.js";
 import { useSettings } from "../context/SettingsContext.jsx";
 
@@ -27,84 +27,6 @@ export default function CustomerForm({
   onDateTouched,
   onTimeTouched,
 }) {
-  const { settings } = useSettings();
-  const PLAY_PACKAGES = settings.softPlayPricing; // same source the package cards use
-
-  // Every purchasable extra — soft play, arcade, gaming, socks — grouped so a
-  // kid's package dropdown covers everything the property sells, not just
-  // soft play. Each option's value is "<category>:<key>" so we know which
-  // slice of `order` to bump when it's picked.
-  const arcadePrice = settings.arcadePricing?.coinPrice ?? 0;
-  const basketballPrice = settings.basketballPricing?.price ?? 0;
-  const gamingPricing = settings.gamingPricing || { ps3: { label: "PS3", pricePerHour: 0 }, ps5: { label: "PS5", pricePerHour: 0 } };
-  const socksPricing = settings.socksPricing || { kid: { label: "Kid Socks", price: 0 }, adult: { label: "Adult Socks", price: 0 } };
-
-  const PACKAGE_GROUPS = [
-    {
-      label: "Soft Play",
-      options: PLAY_PACKAGES.map((pkg) => ({
-        value: `play:${pkg.key}`,
-        label: `${pkg.emoji ? `${pkg.emoji} ` : ""}${pkg.label} — ₹${pkg.price}`,
-      })),
-    },
-    {
-      label: "Arcade",
-      options: [
-        { value: "arcade:coins", label: `🪙 Arcade Coin — ₹${arcadePrice}` },
-        { value: "arcade:basketball", label: `🏀 Basketball — ₹${basketballPrice}` },
-      ],
-    },
-    {
-      label: "Gaming",
-      options: [
-        { value: "gaming:ps3", label: `🕹️ ${gamingPricing.ps3.label || "PS3"} — ₹${gamingPricing.ps3.pricePerHour}/hr` },
-        { value: "gaming:ps5", label: `🎮 ${gamingPricing.ps5.label || "PS5"} — ₹${gamingPricing.ps5.pricePerHour}/hr` },
-      ],
-    },
-    {
-      label: "Socks",
-      options: [
-        { value: "socks:kid", label: `🧦 ${socksPricing.kid.label || "Kid Socks"} — ₹${socksPricing.kid.price}` },
-        { value: "socks:adult", label: `🧦 ${socksPricing.adult.label || "Adult Socks"} — ₹${socksPricing.adult.price}` },
-      ],
-    },
-  ];
-
-  // Applies +1/-1 to whichever slice of `order` a "<category>:<key>" package
-  // value belongs to — the single source every kid-package dropdown writes
-  // through, so billing totals stay accurate no matter which category a
-  // kid's package comes from.
-  const applyPackageDelta = (value, delta) => {
-    if (!value) return;
-    const [category, key] = value.split(":");
-    setOrder((o) => {
-      if (category === "play") {
-        const pkgs = { ...o.playPackages };
-        pkgs[key] = Math.max((pkgs[key] || 0) + delta, 0);
-        return { ...o, playPackages: pkgs };
-      }
-      if (category === "arcade" && key === "coins") {
-        return { ...o, arcadeCoins: Math.max((o.arcadeCoins || 0) + delta, 0) };
-      }
-      if (category === "arcade" && key === "basketball") {
-        return { ...o, basketballQty: Math.max((o.basketballQty || 0) + delta, 0) };
-      }
-      if (category === "gaming") {
-        const gaming = { ...o.gaming };
-        const field = key === "ps3" ? "ps3Hours" : "ps5Hours";
-        gaming[field] = Math.max((gaming[field] || 0) + delta, 0);
-        return { ...o, gaming };
-      }
-      if (category === "socks") {
-        const socks = { ...o.socks };
-        const field = key === "kid" ? "kidQty" : "adultQty";
-        socks[field] = Math.max((socks[field] || 0) + delta, 0);
-        return { ...o, socks };
-      }
-      return o;
-    });
-  };
-
   const update = (field) => (e) => setCustomer((c) => ({ ...c, [field]: e.target.value }));
 
   const updateMobile = (e) => {
@@ -117,14 +39,10 @@ export default function CustomerForm({
   const addKid = () =>
     setCustomer((c) => ({
       ...c,
-      additionalKids: [...(c.additionalKids || []), { kidName: "", dob: "", package: "" }],
+      additionalKids: [...(c.additionalKids || []), { kidName: "", dob: "" }],
     }));
 
-  // Removing a kid also releases the package unit they had selected, so the
-  // package cards / billing totals stay in sync with who's actually on the booking.
   const removeKid = (idx) => {
-    const kid = additionalKids[idx];
-    if (kid?.package) applyPackageDelta(kid.package, -1);
     setCustomer((c) => ({
       ...c,
       additionalKids: (c.additionalKids || []).filter((_, i) => i !== idx),
@@ -137,27 +55,6 @@ export default function CustomerForm({
       kids[idx] = { ...kids[idx], [field]: e.target.value };
       return { ...c, additionalKids: kids };
     });
-
-  // Switching a kid's package moves one unit out of their old package (if
-  // any) — soft play, arcade, gaming, or socks — and into the newly chosen
-  // one, using applyPackageDelta so billing reflects the change without
-  // duplicating any pricing logic here.
-  const updateKidPackage = (idx, newValue) => {
-    const prevValue = additionalKids[idx]?.package || "";
-    // Look up the display label shown in the dropdown (minus the price)
-    // so saved bookings show a clean package name later, regardless of
-    // whether pricing changes afterward.
-    const newLabel = newValue
-      ? PACKAGE_GROUPS.flatMap((g) => g.options).find((o) => o.value === newValue)?.label.replace(/\s*—\s*₹[\d,.]+(\/hr)?$/, "") || ""
-      : "";
-    setCustomer((c) => {
-      const kids = [...(c.additionalKids || [])];
-      kids[idx] = { ...kids[idx], package: newValue, packageLabel: newLabel };
-      return { ...c, additionalKids: kids };
-    });
-    if (prevValue) applyPackageDelta(prevValue, -1);
-    if (newValue) applyPackageDelta(newValue, 1);
-  };
 
   return (
     <motion.section
@@ -205,9 +102,8 @@ export default function CustomerForm({
 
         <Field label="Mobile Number" icon={Phone}>
           <input
-            className={`${inputBase} ${
-              mobileError ? "border-lava focus:border-lava" : "border-ink/10 focus:border-fern"
-            }`}
+            className={`${inputBase} ${mobileError ? "border-lava focus:border-lava" : "border-ink/10 focus:border-fern"
+              }`}
             placeholder="10-digit mobile"
             value={customer.mobileNumber}
             onChange={updateMobile}
@@ -272,60 +168,43 @@ export default function CustomerForm({
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.25 }}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 items-start"
+                className="relative bg-white/60 rounded-2xl p-4 border-2 border-ink/10 mt-4"
               >
-                <Field label={`Kid ${idx + 2} Name`} icon={PawPrint}>
-                  <input
-                    className={`${inputBase} border-ink/10 focus:border-fern`}
-                    placeholder="e.g. Diya"
-                    value={kid.kidName}
-                    onChange={updateKid(idx, "kidName")}
-                  />
-                </Field>
+                {/* Small circular red ✕ delete button at top-right */}
+                <motion.button
+                  type="button"
+                  whileTap={{ scale: 0.85 }}
+                  onClick={() => removeKid(idx)}
+                  aria-label={`Remove kid ${idx + 2}`}
+                  className="absolute top-3 right-3 w-6 h-6 rounded-full bg-lava text-white flex items-center justify-center hover:bg-lava/80 transition-colors shadow-sm z-10"
+                >
+                  <X size={14} />
+                </motion.button>
 
-                <Field label={`Kid ${idx + 2} DOB`} icon={Cake}>
-                  <input
-                    type="date"
-                    className={`${inputBase} border-ink/10 focus:border-fern`}
-                    value={kid.dob}
-                    onChange={updateKid(idx, "dob")}
-                    max={new Date().toISOString().slice(0, 10)}
-                  />
-                  {kidAge && (
-                    <span className="text-xs font-extrabold text-fern bg-fern/10 rounded-full px-2.5 py-1 w-fit mt-1">
-                      🎂 Age: {kidAge}
-                    </span>
-                  )}
-                </Field>
-
-                <div className="flex items-end gap-2">
-                  <Field label={`Kid ${idx + 2} Package`} icon={Package} className="flex-1">
-                    <select
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pr-6">
+                  <Field label={`Kid ${idx + 2} Name`} icon={PawPrint}>
+                    <input
                       className={`${inputBase} border-ink/10 focus:border-fern`}
-                      value={kid.package || ""}
-                      onChange={(e) => updateKidPackage(idx, e.target.value)}
-                    >
-                      <option value="">Select package</option>
-                      {PACKAGE_GROUPS.map((group) => (
-                        <optgroup key={group.label} label={group.label}>
-                          {group.options.map((opt) => (
-                            <option key={opt.value} value={opt.value}>
-                              {opt.label}
-                            </option>
-                          ))}
-                        </optgroup>
-                      ))}
-                    </select>
+                      placeholder="e.g. Diya"
+                      value={kid.kidName}
+                      onChange={updateKid(idx, "kidName")}
+                    />
                   </Field>
-                  <motion.button
-                    type="button"
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => removeKid(idx)}
-                    aria-label={`Remove kid ${idx + 2}`}
-                    className="shrink-0 w-11 h-11 rounded-xl border-2 border-lava/30 bg-lava/10 text-lava flex items-center justify-center hover:bg-lava/20 transition-colors"
-                  >
-                    <X size={18} />
-                  </motion.button>
+
+                  <Field label={`Kid ${idx + 2} DOB`} icon={Cake}>
+                    <input
+                      type="date"
+                      className={`${inputBase} border-ink/10 focus:border-fern`}
+                      value={kid.dob}
+                      onChange={updateKid(idx, "dob")}
+                      max={new Date().toISOString().slice(0, 10)}
+                    />
+                    {kidAge && (
+                      <span className="text-xs font-extrabold text-fern bg-fern/10 rounded-full px-2.5 py-1 w-fit mt-1">
+                        🎂 Age: {kidAge}
+                      </span>
+                    )}
+                  </Field>
                 </div>
               </motion.div>
             );

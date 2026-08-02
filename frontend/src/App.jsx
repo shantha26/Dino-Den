@@ -34,12 +34,12 @@ import UserMenu from "./components/UserMenu.jsx";
 // Which roles can see/use each module. Tabs not listed here for a role are
 // hidden entirely from that role's nav — not just blocked after the fact.
 const TAB_ROLES = {
-  booking: ["admin", "manager", "cashier"],
-  dashboard: ["admin", "manager"],
-  customers: ["admin", "manager", "cashier"],
-  waitlist: ["admin", "manager", "cashier"],
-  offers: ["admin", "manager"],
-  birthdays: ["admin", "manager", "cashier"],
+  booking: ["admin", "staff"],
+  dashboard: ["admin"],
+  customers: ["admin", "staff"],
+  waitlist: ["admin", "staff"],
+  offers: ["admin", "staff"],
+  birthdays: ["admin", "staff"],
   settings: ["admin"],
 };
 
@@ -77,7 +77,7 @@ const emptyOrder = {
 export default function App() {
   const { settings } = useSettings();
   const { user, logout } = useAuth();
-  const role = user?.role || "cashier";
+  const role = user?.role || "staff";
   const [activeTab, setActiveTab] = useState(() => ROLE_HOME_TAB[role] || "booking");
   const [settingsUnlocked, setSettingsUnlocked] = useState(false);
   const [showPinModal, setShowPinModal] = useState(false);
@@ -103,7 +103,7 @@ export default function App() {
   const loadActiveBookings = () => {
     fetchCustomers(formatLocalDate())
       .then(({ data }) => setActiveBookings((data || []).filter((c) => !c.timeOut)))
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setActiveLoading(false));
   };
 
@@ -118,7 +118,7 @@ export default function App() {
   useEffect(() => {
     fetchBirthdays()
       .then(({ data }) => setTodaysBirthdays(data.todaysBirthdays || []))
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   // Keep the play-area capacity status fresh for the notification bell and
@@ -127,7 +127,7 @@ export default function App() {
     const loadStatus = () => {
       fetchWaitlistStatus(formatLocalDate())
         .then(({ data }) => setWaitlistStatus(data))
-        .catch(() => {});
+        .catch(() => { });
     };
     loadStatus();
     const interval = setInterval(loadStatus, 20000);
@@ -139,7 +139,7 @@ export default function App() {
     const loadOffers = () => {
       fetchLiveOffers(formatLocalDate())
         .then(({ data }) => setLiveOffers(data || []))
-        .catch(() => {});
+        .catch(() => { });
     };
     loadOffers();
     const interval = setInterval(loadOffers, 60000);
@@ -187,7 +187,7 @@ export default function App() {
       .then(({ data }) => {
         (data || []).forEach((c) => scheduleCheckoutReminder(c));
       })
-      .catch(() => {});
+      .catch(() => { });
 
     return () => {
       checkoutTimers.current.forEach((handle) => clearTimeout(handle));
@@ -379,8 +379,8 @@ export default function App() {
     // over from the original booking are irrelevant, so don't block saving.
     payableAmount === 0 ||
     Math.round(Number(customer.splitPayment?.cashAmount) || 0) +
-      Math.round(Number(customer.splitPayment?.gpayAmount) || 0) ===
-      Math.round(payableAmount);
+    Math.round(Number(customer.splitPayment?.gpayAmount) || 0) ===
+    Math.round(payableAmount);
 
   const canSave =
     customer.parentName.trim() !== "" &&
@@ -430,14 +430,14 @@ export default function App() {
       setCustomer(emptyCustomer());
       setOrder(emptyOrder);
       setAppliedPromo(null);
-      fetchWaitlistStatus(formatLocalDate()).then(({ data }) => setWaitlistStatus(data)).catch(() => {});
+      fetchWaitlistStatus(formatLocalDate()).then(({ data }) => setWaitlistStatus(data)).catch(() => { });
       setTimeout(() => setSaved(false), 2500);
     } catch (err) {
       setError(
         err?.response?.data?.error ||
-          (editingBooking
-            ? "Could not update the booking. Check that the backend server is running."
-            : "Could not save the booking. Check that the backend server is running.")
+        (editingBooking
+          ? "Could not update the booking. Check that the backend server is running."
+          : "Could not save the booking. Check that the backend server is running.")
       );
     } finally {
       setSaving(false);
@@ -513,9 +513,8 @@ export default function App() {
                   key={key}
                   type="button"
                   onClick={() => handleTabSelect(key)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl font-display text-base md:text-lg tracking-wide transition-colors ${
-                    active ? "bg-cream text-fern shadow-pop" : "text-cream/80 hover:text-cream"
-                  }`}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl font-display text-base md:text-lg tracking-wide transition-colors ${active ? "bg-cream text-fern shadow-pop" : "text-cream/80 hover:text-cream"
+                    }`}
                 >
                   <Icon size={18} />
                   {label}
@@ -540,143 +539,144 @@ export default function App() {
       </header>
 
       <main className="relative z-10 max-w-screen-2xl mx-auto px-4 md:px-8 py-8 flex flex-col gap-8">
-      <AnimatePresence mode="wait">
-      <motion.div
-        key={activeTab}
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        transition={{ duration: 0.28, ease: "easeOut" }}
-        className="flex flex-col gap-8"
-      >
-        {activeTab === "dashboard" ? (
-          <Dashboard />
-        ) : activeTab === "customers" ? (
-          <CustomerDirectory />
-        ) : activeTab === "waitlist" ? (
-          <WaitlistPanel />
-        ) : activeTab === "offers" ? (
-          <OffersManager />
-        ) : activeTab === "birthdays" ? (
-          <Birthdays />
-        ) : activeTab === "settings" ? (
-          <SettingsPage />
-        ) : (
-          <div className="grid grid-cols-1 xl:grid-cols-[380px_1fr] gap-8 items-start">
-            <ActiveBookingsPanel
-              bookings={activeBookings}
-              loading={activeLoading}
-              editingId={editingBooking?._id || null}
-              checkingOutId={checkingOutId}
-              onEdit={handleEditBooking}
-              onCheckout={handleCheckoutFromPanel}
-            />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.28, ease: "easeOut" }}
+            className="flex flex-col gap-8"
+          >
+            {activeTab === "dashboard" ? (
+              <Dashboard />
+            ) : activeTab === "customers" ? (
+              <CustomerDirectory />
+            ) : activeTab === "waitlist" ? (
+              <WaitlistPanel />
+            ) : activeTab === "offers" ? (
+              <OffersManager />
+            ) : activeTab === "birthdays" ? (
+              <Birthdays />
+            ) : activeTab === "settings" ? (
+              <SettingsPage />
+            ) : (
+              <div className="grid grid-cols-1 xl:grid-cols-[380px_1fr] gap-8 items-start">
+                <ActiveBookingsPanel
+                  bookings={activeBookings}
+                  loading={activeLoading}
+                  editingId={editingBooking?._id || null}
+                  checkingOutId={checkingOutId}
+                  onEdit={handleEditBooking}
+                  onCheckout={handleCheckoutFromPanel}
+                />
 
-            <div className="flex flex-col gap-8 min-w-0">
-              {waitlistStatus?.isFull && (
-                <motion.button
-                  type="button"
-                  onClick={() => setActiveTab("waitlist")}
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="w-full text-left bg-lava/10 border-2 border-lava/30 rounded-2xl px-5 py-3.5 flex items-center justify-between gap-3 hover:bg-lava/15 transition-colors"
-                >
-                  <span className="font-display text-sm text-lava flex items-center gap-2">
-                    🔴 Play area is at capacity ({waitlistStatus.currentOccupancy}/{waitlistStatus.capacity})
-                    {waitlistStatus.waitingCount > 0 ? ` — ${waitlistStatus.waitingCount} already waiting` : ""}
-                  </span>
-                  <span className="text-xs font-extrabold uppercase tracking-wide text-lava shrink-0">
-                    Open Waitlist →
-                  </span>
-                </motion.button>
-              )}
-
-              <AnimatePresence>
-                {editingBooking && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.22 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="bg-amber/10 border-2 border-amber/30 rounded-2xl px-5 py-3.5 flex items-center justify-between gap-3 flex-wrap">
-                      <span className="font-display text-sm text-amber flex items-center gap-2">
-                        ✏️ Editing {editingBooking.kidName}'s booking — updates will merge into the existing record, not create a new one.
-                      </span>
-                      <button
-                        type="button"
-                        onClick={handleCancelEdit}
-                        className="text-xs font-extrabold uppercase tracking-wide text-ink/50 hover:text-lava transition-colors shrink-0"
-                      >
-                        Cancel Edit
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <MobileSearch onFill={handleMobileFill} />
-
-              <CustomerForm
-                customer={customer}
-                setCustomer={setCustomer}
-                order={order}
-                setOrder={setOrder}
-                age={age}
-                mobileError={mobileError}
-                onDateTouched={() => (dateTouched.current = true)}
-                onTimeTouched={() => (timeTouched.current = true)}
-              />
-
-              <div className="grid grid-cols-1 lg:grid-cols-[1fr_460px] gap-8 items-start">
-                <div className="flex flex-col gap-6 lg:gap-7">
-                  <PlayPackages order={order} setOrder={setOrder} />
-                  <Gaming order={order} setOrder={setOrder} />
-                  <Socks order={order} setOrder={setOrder} />
-                </div>
-
-                <div className="flex flex-col gap-5">
-                  {error && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -6 }}
+                <div className="flex flex-col gap-8 min-w-0">
+                  {waitlistStatus?.isFull && (
+                    <motion.button
+                      type="button"
+                      onClick={() => setActiveTab("waitlist")}
+                      initial={{ opacity: 0, y: -8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-lava/10 border-2 border-lava/40 text-lava font-bold rounded-2xl px-4 py-3 text-sm"
+                      className="w-full text-left bg-lava/10 border-2 border-lava/30 rounded-2xl px-5 py-3.5 flex items-center justify-between gap-3 hover:bg-lava/15 transition-colors"
                     >
-                      {error}
-                    </motion.div>
+                      <span className="font-display text-sm text-lava flex items-center gap-2">
+                        🔴 Play area is at capacity ({waitlistStatus.currentOccupancy}/{waitlistStatus.capacity})
+                        {waitlistStatus.waitingCount > 0 ? ` — ${waitlistStatus.waitingCount} already waiting` : ""}
+                      </span>
+                      <span className="text-xs font-extrabold uppercase tracking-wide text-lava shrink-0">
+                        Open Waitlist →
+                      </span>
+                    </motion.button>
                   )}
-                  <PaymentMethod
-                    value={customer.paymentMethod}
-                    onChange={(method) => setCustomer((c) => ({ ...c, paymentMethod: method }))}
-                    splitAmounts={customer.splitPayment}
-                    onSplitChange={(splitPayment) => setCustomer((c) => ({ ...c, splitPayment }))}
-                    grandTotal={payableAmount}
-                    totalLabel={editingBooking ? "Amount Due Now" : undefined}
-                    date={customer.date}
+
+                  <AnimatePresence>
+                    {editingBooking && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.22 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="bg-amber/10 border-2 border-amber/30 rounded-2xl px-5 py-3.5 flex items-center justify-between gap-3 flex-wrap">
+                          <span className="font-display text-sm text-amber flex items-center gap-2">
+                            ✏️ Editing {editingBooking.kidName}'s booking — updates will merge into the existing record, not create a new one.
+                          </span>
+                          <button
+                            type="button"
+                            onClick={handleCancelEdit}
+                            className="text-xs font-extrabold uppercase tracking-wide text-ink/50 hover:text-lava transition-colors shrink-0"
+                          >
+                            Cancel Edit
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  <MobileSearch onFill={handleMobileFill} />
+
+                  <CustomerForm
+                    customer={customer}
+                    setCustomer={setCustomer}
+                    order={order}
+                    setOrder={setOrder}
+                    age={age}
+                    mobileError={mobileError}
+                    onDateTouched={() => (dateTouched.current = true)}
+                    onTimeTouched={() => (timeTouched.current = true)}
                   />
-                  <BillingSummary
-                    totals={totals}
-                    paymentMethod={customer.paymentMethod}
-                    splitPayment={customer.splitPayment}
-                    onSave={handleSave}
-                    saving={saving}
-                    saved={saved}
-                    disabled={!canSave}
-                    appliedPromo={appliedPromo}
-                    editing={!!editingBooking}
-                    onCancelEdit={handleCancelEdit}
-                    previouslyPaid={previouslyPaid}
-                    newAdditions={newAdditions}
-                    amountDueNow={amountDueNow}
-                  />
+
+                  <div className="grid grid-cols-1 lg:grid-cols-[1fr_460px] gap-8 items-start">
+                    <div className="flex flex-col gap-6 lg:gap-7">
+                      <PlayPackages order={order} setOrder={setOrder} />
+                      <Gaming order={order} setOrder={setOrder} />
+                      <Socks order={order} setOrder={setOrder} />
+                    </div>
+
+                    <div className="flex flex-col gap-5">
+                      {error && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="bg-lava/10 border-2 border-lava/40 text-lava font-bold rounded-2xl px-4 py-3 text-sm"
+                        >
+                          {error}
+                        </motion.div>
+                      )}
+                      <PaymentMethod
+                        value={customer.paymentMethod}
+                        onChange={(method) => setCustomer((c) => ({ ...c, paymentMethod: method }))}
+                        splitAmounts={customer.splitPayment}
+                        onSplitChange={(splitPayment) => setCustomer((c) => ({ ...c, splitPayment }))}
+                        grandTotal={payableAmount}
+                        totalLabel={editingBooking ? "Amount Due Now" : undefined}
+                        date={customer.date}
+                      />
+                      <BillingSummary
+                        totals={totals}
+                        paymentMethod={customer.paymentMethod}
+                        splitPayment={customer.splitPayment}
+                        onSave={handleSave}
+                        saving={saving}
+                        saved={saved}
+                        disabled={!canSave}
+                        appliedPromo={appliedPromo}
+                        editing={!!editingBooking}
+                        onCancelEdit={handleCancelEdit}
+                        previouslyPaid={previouslyPaid}
+                        newAdditions={newAdditions}
+                        amountDueNow={amountDueNow}
+                        liveOffers={liveOffers}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
-      </motion.div>
-      </AnimatePresence>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       <BirthdayPopup kids={todaysBirthdays} onClose={() => setTodaysBirthdays([])} />

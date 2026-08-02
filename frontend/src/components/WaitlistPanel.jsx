@@ -17,7 +17,7 @@ const STATUS_CONFIG = {
   cancelled: { label: "Cancelled", color: "bg-lava/10 text-lava" },
 };
 
-const emptyJoinForm = { parentName: "", kidName: "", mobileNumber: "" };
+const emptyJoinForm = { kidName: "", mobileNumber: "" };
 
 function CapacityGauge({ status, onRefresh, loading }) {
   const pct = status ? Math.min(100, Math.round((status.currentOccupancy / status.capacity) * 100)) : 0;
@@ -77,14 +77,14 @@ function JoinWaitlistForm({ onJoined }) {
   const [error, setError] = useState("");
   const [result, setResult] = useState(null); // { entry, offers }
 
-  const canSubmit = form.parentName.trim() && form.kidName.trim() && form.mobileNumber.length === 10;
+  const canSubmit = form.kidName.trim() && form.mobileNumber.length === 10;
 
   const handleSubmit = async () => {
     if (!canSubmit) return;
     setSubmitting(true);
     setError("");
     try {
-      const { data } = await joinWaitlist({ ...form, date: formatLocalDate() });
+      const { data } = await joinWaitlist({ ...form, parentName: form.kidName, date: formatLocalDate() });
       setResult(data);
       setForm(emptyJoinForm);
       onJoined?.();
@@ -145,13 +145,7 @@ function JoinWaitlistForm({ onJoined }) {
       <h3 className="font-display text-lg text-ink tracking-wide flex items-center gap-2">
         <LogIn size={18} className="text-fern" /> Join the Waitlist
       </h3>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <input
-          className="rounded-2xl border-2 border-ink/10 focus:border-fern bg-white px-4 py-2.5 font-body font-semibold text-ink placeholder:text-ink/30 focus:outline-none text-sm"
-          placeholder="Parent name"
-          value={form.parentName}
-          onChange={(e) => setForm((f) => ({ ...f, parentName: e.target.value }))}
-        />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <input
           className="rounded-2xl border-2 border-ink/10 focus:border-fern bg-white px-4 py-2.5 font-body font-semibold text-ink placeholder:text-ink/30 focus:outline-none text-sm"
           placeholder="Kid name"
@@ -195,7 +189,7 @@ function QueueEntry({ entry, onUpdate, onRemove }) {
         <div className="min-w-0">
           <p className="font-display text-base text-ink truncate">{entry.kidName}</p>
           <p className="text-xs font-bold text-ink/50 flex items-center gap-1.5">
-            <Phone size={11} /> {entry.mobileNumber} · {entry.parentName}
+            <Phone size={11} /> {entry.mobileNumber}
           </p>
         </div>
       </div>

@@ -3,11 +3,10 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, LogOut, ShieldCheck, UserCircle2 } from "lucide-react";
 
-const ROLE_LABEL = { admin: "Admin", manager: "Manager", cashier: "Cashier" };
+const ROLE_LABEL = { admin: "Admin", staff: "Staff" };
 const ROLE_COLOR = {
   admin: "bg-lava/20 text-lava",
-  manager: "bg-amber/20 text-amber",
-  cashier: "bg-fern/20 text-cream",
+  staff: "bg-fern/20 text-cream",
 };
 
 export default function UserMenu({ user, onLogout }) {
@@ -93,7 +92,7 @@ export default function UserMenu({ user, onLogout }) {
                 <p className="font-display text-sm text-ink truncate">{user.name}</p>
                 <p className="text-xs text-ink/50 font-bold truncate">{user.email}</p>
                 <span className={`inline-flex items-center gap-1 mt-1.5 text-[10px] font-extrabold uppercase tracking-wide px-2 py-0.5 rounded-full ${
-                  user.role === "admin" ? "bg-lava/15 text-lava" : user.role === "manager" ? "bg-amber/15 text-amber" : "bg-fern/15 text-fern"
+                  user.role === "admin" ? "bg-lava/15 text-lava" : "bg-fern/15 text-fern"
                 }`}>
                   <ShieldCheck size={11} /> {ROLE_LABEL[user.role] || user.role}
                 </span>

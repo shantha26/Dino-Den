@@ -12,13 +12,14 @@ import { loadSettings } from "./config/settingsCache.js";
 import { requireAuth } from "./middleware/auth.js";
 import User from "./models/User.js";
 
+// Backend server for Dino Den
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/kids_play_area";
 
-app.use(cors({ origin: process.env.CLIENT_ORIGIN || "*" }));
+app.use(cors({ origin: true, credentials: true }));
 // Raised from Express's 100kb default so a base64-encoded logo upload from
 // the Settings page (validated client-side up to ~1.5MB) doesn't get
 // rejected as "payload too large".

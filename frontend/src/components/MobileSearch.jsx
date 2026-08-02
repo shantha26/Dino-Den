@@ -168,9 +168,7 @@ export default function MobileSearch({ onFill }) {
               <div className="flex flex-wrap items-start gap-3 mb-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-display text-lg text-ink">{result.profile.parentName}</span>
-                    <span className="text-ink/30">·</span>
-                    <span className="font-display text-lg text-fern">{result.profile.kidName}</span>
+                    <span className="font-display text-lg text-ink">{result.profile.kidName}</span>
                     <MembershipBadge tier={stats.membership} />
                   </div>
                   <p className="text-sm font-bold text-ink/40 mt-0.5">{result.profile.mobileNumber}</p>
