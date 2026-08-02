@@ -17,12 +17,9 @@ function isStrongEnough(password) {
 }
 
 // ── Sign up ──────────────────────────────────────────────────────────────────
-// The very first account created on a fresh install becomes an admin
-// (seeded with the legacy 0806 admin security password) so the app is usable
-// out of the box. This deployment only uses the Admin role — every signup
-// after that is also created as an admin account. All accounts are
-// auto-verified and logged straight in on signup; no email verification
-// round-trip required.
+// Accounts are created with the requested role (admin or staff), or default to staff
+// (or admin for the initial bootstrap account). All accounts are auto-verified
+// and logged straight in on signup.
 router.post("/signup", async (req, res) => {
   try {
     const { name, email, password, role } = req.body || {};
