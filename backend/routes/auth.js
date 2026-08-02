@@ -55,14 +55,14 @@ router.post("/signup", async (req, res) => {
     await logActivity(req, {
       user,
       action: "signup",
-      details: isBootstrapAdmin ? "Bootstrap admin account created" : "Account created",
+      details: `${assignedRole} account created`,
     });
 
     const token = signAuthToken(user, { rememberMe: false });
     await logActivity(req, { user, action: "login_success", details: "Auto-login after signup" });
 
     return res.status(201).json({
-      message: isBootstrapAdmin ? "Admin account created." : "Account created.",
+      message: `${assignedRole === "admin" ? "Admin" : "Staff"} account created.`,
       token,
       user: user.toSafeJSON(),
     });
