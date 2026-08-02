@@ -8,13 +8,13 @@ export default function Gaming({ order, setOrder }) {
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 14 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: 0.05 }}
-      className="bg-swamp/5 rounded-blob p-6 md:p-8 lg:p-10 border-2 border-swamp/15"
+      transition={{ duration: 0.3, delay: 0.05 }}
+      className="bg-swamp/5 rounded-2xl p-4 sm:p-5 border-2 border-swamp/15"
     >
-      <h2 className="font-display text-2xl lg:text-3xl text-swamp mb-5 lg:mb-6 flex items-center gap-3">🎮 Gaming</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 lg:gap-6">
+      <h2 className="font-display text-lg sm:text-xl text-swamp mb-3 md:mb-4 flex items-center gap-2">🎮 Gaming</h2>
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
         <ServiceRow
           emoji="🕹️"
           title={`${GAMING.ps3.label} (per hr)`}
@@ -22,7 +22,6 @@ export default function Gaming({ order, setOrder }) {
           value={order.gaming.ps3Hours}
           onChange={(v) => setOrder((o) => ({ ...o, gaming: { ...o.gaming, ps3Hours: v } }))}
           accent="swamp"
-          large
         />
         <ServiceRow
           emoji="🎮"
@@ -31,7 +30,6 @@ export default function Gaming({ order, setOrder }) {
           value={order.gaming.ps5Hours}
           onChange={(v) => setOrder((o) => ({ ...o, gaming: { ...o.gaming, ps5Hours: v } }))}
           accent="swamp"
-          large
         />
       </div>
     </motion.section>

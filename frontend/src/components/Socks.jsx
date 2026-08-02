@@ -8,13 +8,13 @@ export default function Socks({ order, setOrder }) {
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 14 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: 0.1 }}
-      className="bg-amber/10 rounded-blob p-6 md:p-8 lg:p-10 border-2 border-amber/25"
+      transition={{ duration: 0.3, delay: 0.1 }}
+      className="bg-amber/10 rounded-2xl p-4 sm:p-5 border-2 border-amber/25"
     >
-      <h2 className="font-display text-2xl lg:text-3xl text-lava mb-5 lg:mb-6 flex items-center gap-3">🧦 Socks</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 lg:gap-6">
+      <h2 className="font-display text-lg sm:text-xl text-lava mb-3 md:mb-4 flex items-center gap-2">🧦 Socks</h2>
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
         <ServiceRow
           emoji="🧦"
           title={SOCKS.kid.label}
@@ -22,7 +22,6 @@ export default function Socks({ order, setOrder }) {
           value={order.socks.kidQty}
           onChange={(v) => setOrder((o) => ({ ...o, socks: { ...o.socks, kidQty: v } }))}
           accent="amber"
-          large
         />
         <ServiceRow
           emoji="🧦"
@@ -31,7 +30,6 @@ export default function Socks({ order, setOrder }) {
           value={order.socks.adultQty}
           onChange={(v) => setOrder((o) => ({ ...o, socks: { ...o.socks, adultQty: v } }))}
           accent="amber"
-          large
         />
       </div>
     </motion.section>

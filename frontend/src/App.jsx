@@ -629,7 +629,7 @@ export default function App() {
                   />
 
                   <div className="grid grid-cols-1 lg:grid-cols-[1fr_460px] gap-8 items-start">
-                    <div className="flex flex-col gap-6 lg:gap-7">
+                    <div className="flex flex-col gap-4 md:gap-5">
                       <PlayPackages order={order} setOrder={setOrder} />
                       <Gaming order={order} setOrder={setOrder} />
                       <Socks order={order} setOrder={setOrder} />

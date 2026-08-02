@@ -13,17 +13,16 @@ export default function PlayPackages({ order, setOrder }) {
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 14 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35 }}
-      className="bg-fern/5 rounded-blob p-6 md:p-8 lg:p-10 border-2 border-fern/15"
+      transition={{ duration: 0.3 }}
+      className="bg-fern/5 rounded-2xl p-4 sm:p-5 border-2 border-fern/15"
     >
-      <h2 className="font-display text-2xl lg:text-3xl text-fern mb-5 lg:mb-6 flex items-center gap-3">
+      <h2 className="font-display text-lg sm:text-xl text-fern mb-3 md:mb-4 flex items-center gap-2">
         🦕 Play Area Packages
       </h2>
 
-      <p className="text-xs lg:text-sm font-bold text-ink/40 uppercase tracking-widest mb-3 lg:mb-4">Soft Play</p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 lg:gap-6 mb-6 lg:mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
         {PLAY_PACKAGES.map((pkg) => (
           <ServiceRow
             key={pkg.key}
@@ -33,12 +32,8 @@ export default function PlayPackages({ order, setOrder }) {
             value={order.playPackages[pkg.key] || 0}
             onChange={(v) => setPkgQty(pkg.key, v)}
             accent="fern"
-            large
           />
         ))}
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 lg:gap-6">
         <ServiceRow
           emoji="🪙"
           title="Arcade Coin"
@@ -46,7 +41,6 @@ export default function PlayPackages({ order, setOrder }) {
           value={order.arcadeCoins}
           onChange={(v) => setOrder((o) => ({ ...o, arcadeCoins: v }))}
           accent="amber"
-          large
         />
         <ServiceRow
           emoji="🏀"
@@ -55,7 +49,6 @@ export default function PlayPackages({ order, setOrder }) {
           value={order.basketballQty}
           onChange={(v) => setOrder((o) => ({ ...o, basketballQty: v }))}
           accent="lava"
-          large
         />
       </div>
     </motion.section>
