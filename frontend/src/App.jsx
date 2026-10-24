@@ -241,19 +241,27 @@ export default function App() {
         package: k.package || "",
       })),
     });
+    
     setOrder({
       playPackages: {
-        half_hour_soft_play: booking.playPackages?.half_hour_soft_play || 0,
-        unlimited_soft_play: booking.playPackages?.unlimited_soft_play || 0,
-        unlimited_soft_play_arcade: booking.playPackages?.unlimited_soft_play_arcade || 0,
+        ...(booking.playPackages instanceof Map
+          ? Object.fromEntries(booking.playPackages)
+          : booking.playPackages || {}),
       },
       arcadeCoins: booking.arcadeCoins || 0,
       basketballQty: booking.basketballQty || 0,
-      gaming: { ps3Hours: booking.gaming?.ps3Hours || 0, ps5Hours: booking.gaming?.ps5Hours || 0 },
-      socks: { kidQty: booking.socks?.kidQty || 0, adultQty: booking.socks?.adultQty || 0 },
+      gaming: {
+        ps3Hours: booking.gaming?.ps3Hours || 0,
+        ps5Hours: booking.gaming?.ps5Hours || 0,
+      },
+      socks: {
+        kidQty: booking.socks?.kidQty || 0,
+        adultQty: booking.socks?.adultQty || 0,
+      },
       discount: booking.billing?.discountAmount || 0,
       promoCode: booking.billing?.promoCode || "",
     });
+
     setAppliedPromo(
       booking.billing?.promoCode
         ? { code: booking.billing.promoCode, type: null, value: null, discountAmount: booking.billing.discountAmount || 0 }
