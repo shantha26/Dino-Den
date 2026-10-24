@@ -60,19 +60,17 @@ const emptyCustomer = () => ({
   additionalKids: [], // siblings on the same booking: [{ kidName, dob, package }] — package is UI-only, synced into order.playPackages
 });
 
-const emptyOrder = {
-  playPackages: {
-    half_hour_soft_play: 0,
-    unlimited_soft_play: 0,
-    unlimited_soft_play_arcade: 0,
-  },
+const createEmptyOrder = (softPlayPricing = []) => ({
+  playPackages: Object.fromEntries(
+    (Array.isArray(softPlayPricing) ? softPlayPricing : []).map((pkg) => [pkg.key, 0])
+  ),
   arcadeCoins: 0,
   basketballQty: 0,
   gaming: { ps3Hours: 0, ps5Hours: 0 },
   socks: { kidQty: 0, adultQty: 0 },
   discount: 0,
   promoCode: "",
-};
+});
 
 export default function App() {
   const { settings } = useSettings();
@@ -83,7 +81,7 @@ export default function App() {
   const [settingsUnlocked, setSettingsUnlocked] = useState(false);
   const [showPinModal, setShowPinModal] = useState(false);
   const [customer, setCustomer] = useState(emptyCustomer);
-  const [order, setOrder] = useState(emptyOrder);
+  const [order, setOrder] = useState(() => createEmptyOrder(settings?.softPlayPricing));
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -272,7 +270,7 @@ export default function App() {
   const handleCancelEdit = () => {
     setEditingBooking(null);
     setCustomer(emptyCustomer());
-    setOrder(emptyOrder);
+    setOrder(createEmptyOrder(settings?.softPlayPricing));
     setAppliedPromo(null);
     setError("");
     dateTouched.current = false;
@@ -437,7 +435,7 @@ export default function App() {
       dateTouched.current = false;
       timeTouched.current = false;
       setCustomer(emptyCustomer());
-      setOrder(emptyOrder);
+      setOrder(createEmptyOrder(settings?.softPlayPricing));
       setAppliedPromo(null);
       fetchWaitlistStatus(formatLocalDate()).then(({ data }) => setWaitlistStatus(data)).catch(() => { });
       setTimeout(() => setSaved(false), 2500);
